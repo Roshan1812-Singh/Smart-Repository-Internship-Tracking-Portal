@@ -257,7 +257,9 @@ const Reports = () => {
                       Uploading...
                     </>
                   ) : (
-                    <div className="text-xl cursor-pointer m-1 p-3 rounded-2xl text-gray-800 bg-blue-500 border-2 border-gray-800 hover:bg-blue-700 hover:text-white">📤 Submit Report with PDF</div>
+                    <div className="text-xl cursor-pointer m-1 p-3 rounded-2xl text-gray-800 bg-blue-500 border-2 border-gray-800 hover:bg-blue-700 hover:text-white">
+                      📤 Submit Report with PDF
+                    </div>
                   )}
                 </motion.button>
               </form>

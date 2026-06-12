@@ -1,7 +1,8 @@
 import axios from "axios";
+import { API_BASE } from "../config";
 
 const API = axios.create({
-  baseURL: "http://localhost:5000/api",
+  baseURL: API_BASE,
 });
 
 let isRefreshing = false;
@@ -95,7 +96,6 @@ API.interceptors.response.use(
       }
     }
 
-    // Handle 403 Forbidden separately (role access denied)
     if (error.response?.status === 403) {
       console.error("🚫 403 Forbidden:", error.response?.data?.message || "Access denied for your role");
       localStorage.clear();

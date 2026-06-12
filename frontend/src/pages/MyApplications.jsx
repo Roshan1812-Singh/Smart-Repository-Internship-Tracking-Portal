@@ -1,11 +1,18 @@
 import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import { motion } from "framer-motion";
+import { fileUrl } from "../config";
 import Badge from "../components/ui/Badge";
 import HeroHeader from "../components/ui/HeroHeader";
 import DataTable from "../components/ui/DataTable";
 import ProgressBar from "../components/ui/ProgressBar";
-import { getMyApplications, createApplication, updateApplication, deleteApplication, uploadProof } from "../services/internshipService";
+import {
+  getMyApplications,
+  createApplication,
+  updateApplication,
+  deleteApplication,
+  uploadProof,
+} from "../services/internshipService";
 
 const MyApplications = () => {
   const [internships, setInternships] = useState([]);
@@ -50,13 +57,15 @@ const MyApplications = () => {
   const refresh = () => fetchInternships();
 
   const handleDelete = async (id) => {
-    if (!confirm('Delete this application? This cannot be undone.')) return;
+    if (!confirm("Delete this application? This cannot be undone.")) return;
     try {
       await deleteApplication(id);
       toast.success("Application deleted successfully!");
       refresh();
     } catch (error) {
-      toast.error("Delete failed: " + (error.response?.data?.message || error.message));
+      toast.error(
+        "Delete failed: " + (error.response?.data?.message || error.message),
+      );
     }
   };
 
@@ -138,42 +147,43 @@ const MyApplications = () => {
   }
 
   const tableColumns = [
-    { key: 'companyName', label: 'Company', sortable: true },
-    { key: 'role', label: 'Role', sortable: true },
-    { key: 'domain', label: 'Domain' },
-    { 
-      key: 'appliedOn', 
-      label: 'Applied', 
-      render: (val) => val ? new Date(val).toLocaleDateString() : 'N/A',
-      sortable: true
+    { key: "companyName", label: "Company", sortable: true },
+    { key: "role", label: "Role", sortable: true },
+    { key: "domain", label: "Domain" },
+    {
+      key: "appliedOn",
+      label: "Applied",
+      render: (val) => (val ? new Date(val).toLocaleDateString() : "N/A"),
+      sortable: true,
     },
     {
-      key: 'status',
-      label: 'Status',
-      render: (val) => <Badge status={val || 'PENDING'} />
+      key: "status",
+      label: "Status",
+      render: (val) => <Badge status={val || "PENDING"} />,
     },
     {
-      key: 'progress',
-      label: 'Progress',
+      key: "progress",
+      label: "Progress",
       render: (val) => (
         <div className="w-20">
           <ProgressBar value={val || 0} />
           <span className="text-xs text-gray-500 block">{val || 0}%</span>
         </div>
-      )
+      ),
     },
     {
-      key: 'proofOfApplication',
-      label: 'Proof',
-      render: (val) => val?.url ? (
-        <span className="text-green-600 font-bold text-lg">✅</span>
-      ) : (
-        <span className="text-red-600 font-bold text-lg">❌</span>
-      )
+      key: "proofOfApplication",
+      label: "Proof",
+      render: (val) =>
+        val?.url ? (
+          <span className="text-green-600 font-bold text-lg">✅</span>
+        ) : (
+          <span className="text-red-600 font-bold text-lg">❌</span>
+        ),
     },
     {
-      key: 'actions',
-      label: 'Actions',
+      key: "actions",
+      label: "Actions",
       render: (_, row) => (
         <div className="flex gap-1">
           <button
@@ -208,14 +218,13 @@ const MyApplications = () => {
             🗑️
           </button>
         </div>
-      )
-    }
+      ),
+    },
   ];
 
   return (
     <div className="min-h-screen py-12 px-4 md:px-8 lg:px-12 bg-gradient-to-br from-indigo-50 via-white to-emerald-50 dark:from-gray-900 dark:to-gray-800">
       <div className="max-w-7xl mx-auto space-y-12">
-        {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
@@ -235,7 +244,6 @@ const MyApplications = () => {
           </motion.button>
         </motion.div>
 
-        {/* Table Section */}
         <motion.div
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
@@ -263,9 +271,12 @@ const MyApplications = () => {
               className="text-center py-20 bg-white/50 dark:bg-gray-900/50 rounded-3xl backdrop-blur-xl border border-gray-200/50"
             >
               <div className="text-6xl mb-6 mx-auto">📄</div>
-              <h3 className="text-2xl font-bold text-gray-800 mb-2">No Applications</h3>
+              <h3 className="text-2xl font-bold text-gray-800 mb-2">
+                No Applications
+              </h3>
               <p className="text-gray-600 mb-8 max-w-md mx-auto">
-                Start your internship journey by creating your first application.
+                Start your internship journey by creating your first
+                application.
               </p>
               <motion.button
                 whileHover={{ scale: 1.05 }}
@@ -285,7 +296,6 @@ const MyApplications = () => {
           )}
         </motion.div>
 
-        {/* Modals */}
         {showModal && (
           <motion.div
             initial={{ opacity: 0 }}
@@ -301,12 +311,14 @@ const MyApplications = () => {
             >
               <div className="sticky top-0 bg-gradient-to-r from-emerald-500 to-teal-600 p-6 rounded-t-3xl text-white">
                 <h2 className="text-2xl font-bold">
-                  {isEditMode ? 'Update Application' : 'New Application'}
+                  {isEditMode ? "Update Application" : "New Application"}
                 </h2>
               </div>
               <form onSubmit={handleSubmit} className="p-8 space-y-6">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Company Name *</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Company Name *
+                  </label>
                   <input
                     name="companyName"
                     value={formData.companyName}
@@ -317,7 +329,9 @@ const MyApplications = () => {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Role *</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Role *
+                  </label>
                   <input
                     name="role"
                     value={formData.role}
@@ -329,7 +343,9 @@ const MyApplications = () => {
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Domain</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Domain
+                    </label>
                     <input
                       name="domain"
                       value={formData.domain}
@@ -339,7 +355,9 @@ const MyApplications = () => {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Project Title</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Project Title
+                    </label>
                     <input
                       name="projectTitle"
                       value={formData.projectTitle}
@@ -351,7 +369,9 @@ const MyApplications = () => {
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Start Date</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Start Date
+                    </label>
                     <input
                       type="date"
                       name="startDate"
@@ -361,7 +381,9 @@ const MyApplications = () => {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">End Date</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      End Date
+                    </label>
                     <input
                       type="date"
                       name="endDate"
@@ -372,7 +394,9 @@ const MyApplications = () => {
                   </div>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Notes</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Notes
+                  </label>
                   <textarea
                     name="notes"
                     value={formData.notes}
@@ -395,7 +419,11 @@ const MyApplications = () => {
                     disabled={submitting}
                     className="flex-1 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white py-3 px-6 rounded-2xl font-bold shadow-xl transition-all disabled:opacity-50"
                   >
-                    {submitting ? "Saving..." : isEditMode ? "Update" : "Submit Application"}
+                    {submitting
+                      ? "Saving..."
+                      : isEditMode
+                        ? "Update"
+                        : "Submit Application"}
                   </button>
                 </div>
               </form>
@@ -403,7 +431,6 @@ const MyApplications = () => {
           </motion.div>
         )}
 
-        {/* View Modal */}
         {showViewModal && selectedApp && (
           <motion.div
             initial={{ opacity: 0 }}
@@ -424,7 +451,9 @@ const MyApplications = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
                     <h3 className="font-bold text-lg mb-2">Company</h3>
-                    <p className="text-2xl font-semibold">{selectedApp.companyName}</p>
+                    <p className="text-2xl font-semibold">
+                      {selectedApp.companyName}
+                    </p>
                   </div>
                   <div>
                     <h3 className="font-bold text-lg mb-2">Role</h3>
@@ -438,13 +467,19 @@ const MyApplications = () => {
                   </div>
                   <div className="bg-gray-50 dark:bg-gray-800 p-4 rounded-2xl">
                     <h4 className="font-semibold mb-1">Applied</h4>
-                    <p>{selectedApp.appliedOn ? new Date(selectedApp.appliedOn).toLocaleDateString() : 'N/A'}</p>
+                    <p>
+                      {selectedApp.appliedOn
+                        ? new Date(selectedApp.appliedOn).toLocaleDateString()
+                        : "N/A"}
+                    </p>
                   </div>
                   <div className="bg-gray-50 dark:bg-gray-800 p-4 rounded-2xl">
                     <h4 className="font-semibold mb-1">Progress</h4>
                     <div className="w-full">
                       <ProgressBar value={selectedApp.progress || 0} />
-                      <p className="text-sm text-gray-600 mt-1">{(selectedApp.progress || 0).toFixed(0)}%</p>
+                      <p className="text-sm text-gray-600 mt-1">
+                        {(selectedApp.progress || 0).toFixed(0)}%
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -464,7 +499,7 @@ const MyApplications = () => {
                       <div>
                         <p className="font-semibold">Uploaded</p>
                         <a
-                          href={`http://localhost:5000${selectedApp.documents.proofOfApplication.url}`}
+                          href={fileUrl(selectedApp.documents.proofOfApplication.url)}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="text-blue-600 hover:underline"
@@ -512,7 +547,6 @@ const MyApplications = () => {
           </motion.div>
         )}
 
-        {/* Proof Upload Modal */}
         {showProofModal && selectedApp && (
           <motion.div
             initial={{ opacity: 0 }}
@@ -526,8 +560,12 @@ const MyApplications = () => {
               className="bg-white dark:bg-gray-900 w-full max-w-md rounded-3xl shadow-2xl p-8"
               onClick={(e) => e.stopPropagation()}
             >
-              <h3 className="text-xl font-bold mb-4 text-gray-900 dark:text-white">Upload Proof of Application</h3>
-              <p className="text-gray-600 mb-6">Upload screenshot/email proof that you sent the application</p>
+              <h3 className="text-xl font-bold mb-4 text-gray-900 dark:text-white">
+                Upload Proof of Application
+              </h3>
+              <p className="text-gray-600 mb-6">
+                Upload screenshot/email proof that you sent the application
+              </p>
               <input
                 type="file"
                 accept="image/*,.pdf"
@@ -554,7 +592,6 @@ const MyApplications = () => {
           </motion.div>
         )}
 
-        {/* Edit/Create Modal */}
         {showModal && (
           <motion.div
             className="fixed inset-0 bg-black/60 backdrop-blur z-[1000]"
@@ -570,24 +607,85 @@ const MyApplications = () => {
             >
               <div className="sticky top-0 bg-gradient-to-r from-emerald-500 to-teal-600 p-6 rounded-t-3xl text-white">
                 <h2 className="text-2xl font-bold">
-                  {isEditMode ? '✏️ Update Application' : '➕ New Application'}
+                  {isEditMode ? "✏️ Update Application" : "➕ New Application"}
                 </h2>
               </div>
               <form onSubmit={handleSubmit} className="p-8 space-y-6">
-                <input name="companyName" value={formData.companyName} onChange={handleChange} required placeholder="Company Name" className="w-full p-4 border rounded-xl focus:ring-2 focus:ring-emerald-500" />
-                <input name="role" value={formData.role} onChange={handleChange} required placeholder="Role" className="w-full p-4 border rounded-xl focus:ring-2 focus:ring-emerald-500" />
+                <input
+                  name="companyName"
+                  value={formData.companyName}
+                  onChange={handleChange}
+                  required
+                  placeholder="Company Name"
+                  className="w-full p-4 border rounded-xl focus:ring-2 focus:ring-emerald-500"
+                />
+                <input
+                  name="role"
+                  value={formData.role}
+                  onChange={handleChange}
+                  required
+                  placeholder="Role"
+                  className="w-full p-4 border rounded-xl focus:ring-2 focus:ring-emerald-500"
+                />
                 <div className="grid md:grid-cols-2 gap-4">
-                  <input name="domain" value={formData.domain} onChange={handleChange} placeholder="Domain" className="p-4 border rounded-xl focus:ring-2 focus:ring-emerald-500" />
-                  <input name="projectTitle" value={formData.projectTitle} onChange={handleChange} placeholder="Project Title" className="p-4 border rounded-xl focus:ring-2 focus:ring-emerald-500" />
+                  <input
+                    name="domain"
+                    value={formData.domain}
+                    onChange={handleChange}
+                    placeholder="Domain"
+                    className="p-4 border rounded-xl focus:ring-2 focus:ring-emerald-500"
+                  />
+                  <input
+                    name="projectTitle"
+                    value={formData.projectTitle}
+                    onChange={handleChange}
+                    placeholder="Project Title"
+                    className="p-4 border rounded-xl focus:ring-2 focus:ring-emerald-500"
+                  />
                 </div>
                 <div className="grid md:grid-cols-2 gap-4">
-                  <input type="date" name="startDate" value={formData.startDate} onChange={handleChange} className="p-4 border rounded-xl focus:ring-2 focus:ring-emerald-500" />
-                  <input type="date" name="endDate" value={formData.endDate} onChange={handleChange} className="p-4 border rounded-xl focus:ring-2 focus:ring-emerald-500" />
+                  <input
+                    type="date"
+                    name="startDate"
+                    value={formData.startDate}
+                    onChange={handleChange}
+                    className="p-4 border rounded-xl focus:ring-2 focus:ring-emerald-500"
+                  />
+                  <input
+                    type="date"
+                    name="endDate"
+                    value={formData.endDate}
+                    onChange={handleChange}
+                    className="p-4 border rounded-xl focus:ring-2 focus:ring-emerald-500"
+                  />
                 </div>
-                <textarea name="notes" value={formData.notes} onChange={handleChange} placeholder="Additional notes..." rows="3" className="w-full p-4 border rounded-xl focus:ring-2 focus:ring-emerald-500 resize-vertical" />
+                <textarea
+                  name="notes"
+                  value={formData.notes}
+                  onChange={handleChange}
+                  placeholder="Additional notes..."
+                  rows="3"
+                  className="w-full p-4 border rounded-xl focus:ring-2 focus:ring-emerald-500 resize-vertical"
+                />
                 <div className="flex gap-4">
-                  <button type="button" onClick={() => setShowModal(false)} className="flex-1 bg-gray-400 text-white py-3 rounded-xl hover:bg-gray-500">Cancel</button>
-                  <button type="submit" disabled={submitting} className="flex-1 bg-gradient-to-r from-emerald-500 to-teal-600 text-white py-3 rounded-xl hover:from-emerald-600 hover:to-teal-700 font-bold shadow-lg">{submitting ? "Saving..." : (isEditMode ? "Update" : "Submit")}</button>
+                  <button
+                    type="button"
+                    onClick={() => setShowModal(false)}
+                    className="flex-1 bg-gray-400 text-white py-3 rounded-xl hover:bg-gray-500"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={submitting}
+                    className="flex-1 bg-gradient-to-r from-emerald-500 to-teal-600 text-white py-3 rounded-xl hover:from-emerald-600 hover:to-teal-700 font-bold shadow-lg"
+                  >
+                    {submitting
+                      ? "Saving..."
+                      : isEditMode
+                        ? "Update"
+                        : "Submit"}
+                  </button>
                 </div>
               </form>
             </motion.div>
@@ -599,4 +697,3 @@ const MyApplications = () => {
 };
 
 export default MyApplications;
-

@@ -1,6 +1,7 @@
 const Report = require("../models/Report");
 const Internship = require("../models/Internship");
 const Evaluation = require("../models/Evaluation");
+const { getFileUrl } = require("../config/upload");
 
 exports.createReport = async (req, res) => {
   try {
@@ -22,8 +23,8 @@ exports.createReport = async (req, res) => {
 
     if (req.file) {
       reportData.document = {
-        filename: req.file.filename,
-        path: `/uploads/documents/${req.file.filename}`,
+        filename: req.file.originalname || req.file.filename,
+        path: getFileUrl(req.file, "documents"),
         mimeType: req.file.mimetype,
         size: req.file.size
       };

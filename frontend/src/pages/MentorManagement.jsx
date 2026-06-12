@@ -62,7 +62,6 @@ const MentorManagement = () => {
     <div className="p-6 min-h-screen bg-gray-950 text-white">
       <h1 className="text-3xl font-bold mb-6">Mentor Management</h1>
 
-      {/* 🔍 SEARCH */}
       <input
         type="text"
         placeholder="Search students..."
@@ -94,14 +93,12 @@ const MentorManagement = () => {
               key={mentor._id}
               className="bg-gray-900 p-5 rounded-2xl shadow-lg border border-gray-800"
             >
-              {/* Mentor Info */}
               <div className="mb-4">
                 <h2 className="text-xl font-semibold">{mentor.name}</h2>
                 <p className="text-gray-400 text-sm">{mentor.email}</p>
                 <p className="text-sm mt-1">Assigned: {assignedIds.length}</p>
               </div>
 
-              {/* Selected Students */}
               <div className="flex flex-wrap gap-2 mb-4">
                 {assignedIds.map((id) => {
                   const student = students.find((s) => s._id === id);
@@ -116,7 +113,6 @@ const MentorManagement = () => {
                 })}
               </div>
 
-              {/* Student List */}
               <div className="max-h-48 overflow-y-auto space-y-2">
                 {filteredStudents.map((student) => {
                   const checked = assignedIds.includes(student._id);

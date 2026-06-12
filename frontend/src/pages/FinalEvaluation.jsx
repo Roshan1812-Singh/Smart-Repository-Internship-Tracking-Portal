@@ -148,7 +148,6 @@ const FinalEvaluation = () => {
               )}
             </div>
 
-            {/* Ratings */}
             <div>
               <label className="block text-xl font-bold text-gray-900 mb-8">Performance Ratings (1-10)</label>
               
@@ -190,7 +189,6 @@ const FinalEvaluation = () => {
                 </div>
               </div>
 
-              {/* Average */}
               {averageRating > 0 && (
                 <div className="mt-12 p-8 bg-gradient-to-r from-amber-50 to-rose-50/80 dark:from-amber-900/30 rounded-3xl border border-amber-200/50 shadow-inner">
                   <h4 className="text-2xl font-bold text-gray-200 mb-4">Overall Rating</h4>
@@ -205,7 +203,6 @@ const FinalEvaluation = () => {
             </div>
           </div>
 
-          {/* Comments */}
           <div className="col-span-full">
             <label className="block text-xl font-bold text-gray-900 mb-6">Final Comments</label>
             <textarea

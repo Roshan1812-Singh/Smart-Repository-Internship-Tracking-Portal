@@ -85,8 +85,8 @@ function App() {
             }
           />
           <Route path="/login" element={<Login />} />
-<Route path="/register" element={<PublicStudentRegister />} /> {/* ✅ FIXED: Public register (no auth) */}
-          <Route path="/student/register" element={<StudentRegister />} /> {/* File uploads only */}
+          <Route path="/register" element={<PublicStudentRegister />} /> 
+          <Route path="/student/register" element={<StudentRegister />} /> 
           <Route path="/superadmin-login" element={<SuperAdminLogin />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password" element={<ResetPassword />} />

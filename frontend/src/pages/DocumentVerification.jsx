@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import API from "../api/axios";
 import toast from "react-hot-toast";
+import { fileUrl } from "../config";
 
 const DocumentVerification = () => {
   const [internships, setInternships] = useState([]);
@@ -151,7 +152,7 @@ const renderDoc = ({ internship, label, key, verifying, handleVerify }) => {
         {doc?.url ? (
           <>
             <a
-              href={`http://localhost:5000${doc.url}`}
+              href={fileUrl(doc.url)}
               target="_blank"
               rel="noreferrer"
               className="px-3 py-1 bg-blue-500 text-white text-xs rounded"

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import API from "../api/axios";
+import { fileUrl } from "../config";
 import HeroHeader from "../components/ui/HeroHeader";
 import Badge from "../components/ui/Badge";
 import Card from "../components/ui/Card";
@@ -64,7 +65,6 @@ const FinalSubmission = () => {
         },
       });
 
-      // Update local state
       setInternship((prev) => ({
         ...prev,
         documents: {
@@ -131,7 +131,6 @@ const FinalSubmission = () => {
             animate={{ opacity: 1, y: 0 }}
             className="space-y-12"
           >
-            {/* Checklist */}
             <Card className="backdrop-blur-xl shadow-2xl p-10">
               <h3 className="text-3xl font-black mb-8 text-center text-black">
                 Submission Checklist
@@ -182,10 +181,7 @@ const FinalSubmission = () => {
                         <button
                           className="mt-4 bg-blue-400 text-white px-4 py-2 rounded"
                           onClick={() =>
-                            window.open(
-                              `http://localhost:5000${doc.url}`,
-                              "_blank",
-                            )
+                            window.open(fileUrl(doc.url), "_blank")
                           }
                         >
                           View File
@@ -207,7 +203,6 @@ const FinalSubmission = () => {
               </div>
             </Card>
 
-            {/* Progress */}
             <ProgressBar
               value={
                 (Object.values(docTypeMap).filter(
@@ -219,7 +214,6 @@ const FinalSubmission = () => {
               label="Completion Progress"
             />
 
-            {/* Submit */}
             <button
               onClick={submitFinal}
               disabled={

@@ -165,7 +165,7 @@ const getSecurityLogs = async (req, res) => {
   }
 };
 
-// Role & Permission Management
+// Role & Permission Management (persisted in SystemConfig)
 const allPossiblePermissions = [
   "manage-admins", "manage-users", "manage-permissions", "manage-system",
   "manage-students", "manage-mentors", "view-reports", "export-data",
@@ -173,7 +173,7 @@ const allPossiblePermissions = [
   "view-progress", "submit-reports"
 ];
 
-const rolePermissions = {
+const DEFAULT_ROLE_PERMISSIONS = {
   superadmin: [
     "manage-admins", "manage-users", "manage-permissions", "manage-system",
     "manage-students", "manage-mentors", "view-reports", "export-data",
@@ -184,36 +184,61 @@ const rolePermissions = {
   student: ["view-progress", "submit-reports"],
 };
 
-const getRoles = (req, res) => {
-  const roles = Object.keys(rolePermissions).map((name) => ({ name }));
-  res.json(roles);
+// Load (or initialise) the SystemConfig doc and ensure rolePermissions exists.
+const loadRolePermissions = async () => {
+  let config = await SystemConfig.findOne();
+  if (!config) config = await SystemConfig.create({});
+  if (!config.rolePermissions) {
+    config.rolePermissions = { ...DEFAULT_ROLE_PERMISSIONS };
+    await config.save();
+  }
+  return config;
 };
 
-const getRolePermissions = (req, res) => {
-  const { role } = req.params;
-  const permissions = rolePermissions[role] || [];
-  res.json({ permissions, allPossiblePermissions });
+const getRoles = async (req, res) => {
+  try {
+    const config = await loadRolePermissions();
+    const roles = Object.keys(config.rolePermissions).map((name) => ({ name }));
+    res.json(roles);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 };
 
-const toggleRolePermission = (req, res) => {
-  const { role } = req.params;
-  const { permission } = req.body;
-  if (!permission) {
-    return res.status(400).json({ message: "Permission is required" });
+const getRolePermissions = async (req, res) => {
+  try {
+    const { role } = req.params;
+    const config = await loadRolePermissions();
+    const permissions = config.rolePermissions[role] || [];
+    res.json({ permissions, allPossiblePermissions });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
+};
 
-  if (!rolePermissions[role]) {
-    rolePermissions[role] = [];
+const toggleRolePermission = async (req, res) => {
+  try {
+    const { role } = req.params;
+    const { permission } = req.body;
+    if (!permission) {
+      return res.status(400).json({ message: "Permission is required" });
+    }
+
+    const config = await loadRolePermissions();
+    const current = config.rolePermissions[role] || [];
+
+    config.rolePermissions[role] = current.includes(permission)
+      ? current.filter((p) => p !== permission)
+      : [...current, permission];
+
+    // Mixed-type fields need an explicit dirty flag to persist.
+    config.markModified("rolePermissions");
+    await config.save();
+
+    res.json(config.rolePermissions[role]);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
-
-  const current = rolePermissions[role];
-  if (current.includes(permission)) {
-    rolePermissions[role] = current.filter((p) => p !== permission);
-  } else {
-    rolePermissions[role] = [...current, permission];
-  }
-
-  res.json(rolePermissions[role]);
 };
 
 const getAccessLogs = async (req, res) => {

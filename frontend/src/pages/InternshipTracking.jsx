@@ -1,9 +1,8 @@
-
 import { useEffect, useState } from "react";
 import API from "../api/axios";
 import toast from "react-hot-toast";
-import { Link } from 'react-router-dom';
-
+import { Link } from "react-router-dom";
+import { fileUrl } from "../config";
 
 const InternshipTracking = () => {
   const [internships, setInternships] = useState([]);
@@ -37,7 +36,7 @@ const InternshipTracking = () => {
       pending: "bg-yellow-500 text-white",
       rejected: "bg-red-500 text-white",
       completed: "bg-blue-500 text-white",
-      active: "bg-indigo-500 text-white"
+      active: "bg-indigo-500 text-white",
     };
     return colors[status] || "bg-gray-500 text-white";
   };
@@ -60,7 +59,6 @@ const InternshipTracking = () => {
         </button>
       </div>
 
-      {/* INTERNSHIPS */}
       <div className="mb-12">
         <h2 className="text-2xl font-semibold mb-6 flex items-center">
           Active Internships ({internships.length})
@@ -77,17 +75,24 @@ const InternshipTracking = () => {
         ) : (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {internships.map((internship) => (
-              <div key={internship._id} className="bg-gray-900/50 backdrop-blur-sm border border-gray-700 p-6 rounded-2xl hover:border-blue-500 transition-all group">
+              <div
+                key={internship._id}
+                className="bg-gray-900/50 backdrop-blur-sm border border-gray-700 p-6 rounded-2xl hover:border-blue-500 transition-all group"
+              >
                 <div className="flex justify-between items-start mb-4">
                   <div className="flex-1">
                     <h3 className="text-xl font-bold mb-1 line-clamp-1">
-                      {internship.companyName || 'Unnamed Company'}
+                      {internship.companyName || "Unnamed Company"}
                     </h3>
                     <p className="text-sm text-gray-400 mb-2">
-                      {internship.role || internship.domain || 'Internship Role'}
+                      {internship.role ||
+                        internship.domain ||
+                        "Internship Role"}
                     </p>
                     <div className="flex items-center gap-2 mb-2">
-                      <span className={`px-3 py-1 text-xs rounded-full font-medium ${getStatusColor(internship.status)}`}>
+                      <span
+                        className={`px-3 py-1 text-xs rounded-full font-medium ${getStatusColor(internship.status)}`}
+                      >
                         {internship.status}
                       </span>
                       {internship.startDate && (
@@ -98,29 +103,32 @@ const InternshipTracking = () => {
                     </div>
                   </div>
                   <span className="w-12 h-12 bg-gradient-to-br rounded-xl flex items-center justify-center text-sm font-bold shadow-lg ml-4 flex-shrink-0">
-                    {internship.mentor?.name?.[0] || '?'}
+                    {internship.mentor?.name?.[0] || "?"}
                   </span>
                 </div>
 
-                {/* STUDENT DETAILS */}
                 <div className="mb-4 p-3 bg-gray-800/50 rounded-xl">
                   <h4 className="font-semibold text-sm mb-2">Student</h4>
                   <div>
-                    <div className="font-medium">{internship.student?.name || 'Unknown'}</div>
-                    <div className="text-xs text-gray-400">{internship.student?.email}</div>
+                    <div className="font-medium">
+                      {internship.student?.name || "Unknown"}
+                    </div>
+                    <div className="text-xs text-gray-400">
+                      {internship.student?.email}
+                    </div>
                     {internship.student?.department && (
                       <div className="text-xs text-gray-400">
-                        {internship.student.department} | {internship.student.year || 'N/A'}
+                        {internship.student.department} |{" "}
+                        {internship.student.year || "N/A"}
                       </div>
                     )}
                   </div>
                 </div>
 
-                {/* QUICK ACTIONS */}
                 <div className="flex flex-wrap gap-2 pt-4 border-t border-gray-700">
                   {internship.student?.resume && (
                     <a
-                      href={`http://localhost:5000${internship.student.resume}`}
+                      href={fileUrl(internship.student.resume)}
                       target="_blank"
                       rel="noreferrer"
                       className="px-3 py-1 bg-green-500/80 hover:bg-green-600 text-xs rounded-lg text-white transition-colors flex items-center gap-1"
@@ -144,8 +152,7 @@ const InternshipTracking = () => {
                     to={`/admin/reports`}
                     className="px-3 py-1 bg-purple-500/80 hover:bg-purple-600 text-xs rounded-lg text-white transition-colors"
                   >
-                    📊
-                    Reports
+                    📊 Reports
                   </Link>
                 </div>
               </div>
@@ -154,9 +161,10 @@ const InternshipTracking = () => {
         )}
       </div>
 
-      {/* INACTIVE STUDENTS */}
       <div>
-        <h2 className="text-2xl font-semibold mb-6">⚠️ Inactive Students ({inactive.length})</h2>
+        <h2 className="text-2xl font-semibold mb-6">
+          ⚠️ Inactive Students ({inactive.length})
+        </h2>
         {inactive.length === 0 ? (
           <div className="text-center py-12 bg-gray-900 rounded-2xl p-8">
             <div className="text-4xl mb-4 text-green-400">✅</div>
@@ -165,12 +173,20 @@ const InternshipTracking = () => {
         ) : (
           <div className="space-y-3 max-h-96 overflow-y-auto">
             {inactive.map((student, idx) => (
-              <div key={idx} className="bg-gradient-to-r from-orange-500/10 to-red-500/10 border-l-4 border-orange-500 p-5 rounded-lg hover:shadow-lg transition-all">
+              <div
+                key={idx}
+                className="bg-gradient-to-r from-orange-500/10 to-red-500/10 border-l-4 border-orange-500 p-5 rounded-lg hover:shadow-lg transition-all"
+              >
                 <div className="flex justify-between items-center">
                   <div>
-                    <div className="font-semibold text-lg">{student.student?.name || 'Student'}</div>
+                    <div className="font-semibold text-lg">
+                      {student.student?.name || "Student"}
+                    </div>
                     <div className="text-sm text-gray-400 flex items-center gap-2">
-                      <span>Last update: {new Date(student.updatedAt).toLocaleDateString()}</span>
+                      <span>
+                        Last update:{" "}
+                        {new Date(student.updatedAt).toLocaleDateString()}
+                      </span>
                       <span className="px-2 py-1 bg-orange-500 text-white text-xs rounded-full">
                         Alert
                       </span>
@@ -193,4 +209,3 @@ const InternshipTracking = () => {
 };
 
 export default InternshipTracking;
-

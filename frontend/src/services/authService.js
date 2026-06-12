@@ -1,7 +1,6 @@
 import API from "../api/axios";
 
 export const loginUser = (data) => {
-  // login payload expects { email, password }
   return API.post("/auth/login", data);
 };
 

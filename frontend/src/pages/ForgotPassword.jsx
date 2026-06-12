@@ -20,8 +20,14 @@ const ForgotPassword = () => {
   return (
     <div className="min-h-screen bg-gradient-primary dark:bg-gradient-secondary flex items-center justify-center bg-gray-900">
       <div className="w-full max-w-md bg-white/95 dark:bg-gray-500/95 p-8 rounded-2xl shadow-2xl backdrop-blur-md">
-        <h2 className="text-4xl font-bold mb-4 text-gray-900">Forgot Password</h2>
-        {message && <p className="mb-4 text-sm text-gray-700 dark:text-gray-300">{message}</p>}
+        <h2 className="text-4xl font-bold mb-4 text-gray-900">
+          Forgot Password
+        </h2>
+        {message && (
+          <p className="mb-4 text-sm text-gray-700 dark:text-gray-300">
+            {message}
+          </p>
+        )}
         <form onSubmit={handleSubmit} className="space-y-4">
           <input
             type="email"
@@ -39,9 +45,9 @@ const ForgotPassword = () => {
           </button>
         </form>
         <p className="mt-4 text-center text-sm text-white">
-          Remembered?{' '}
+          Remembered?{" "}
           <span
-            onClick={() => navigate('/login')}
+            onClick={() => navigate("/login")}
             className="text-black text-bold cursor-pointer underline"
           >
             Login

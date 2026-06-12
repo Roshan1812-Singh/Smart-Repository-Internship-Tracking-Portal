@@ -76,7 +76,6 @@ const PermissionManagement = () => {
   return (
     <div className="p-8 min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 dark:from-gray-900 dark:via-gray-800 dark:to-slate-900">
       <div className="max-w-6xl mx-auto">
-        {/* Hero Header */}
         <div className="mb-16 rounded-3xl bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 p-12 text-white shadow-2xl text-center">
           <div className="w-24 h-24 bg-white/20 rounded-3xl flex items-center justify-center mx-auto mb-8 shadow-2xl backdrop-blur-sm">
             <svg className="w-14 h-14 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -100,7 +99,6 @@ const PermissionManagement = () => {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 mb-12">
-          {/* Role Selector */}
           <div className="lg:col-span-1">
             <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl sticky top-8 rounded-3xl p-8 shadow-2xl border border-white/40 dark:border-gray-700/60">
               <h3 className="text-2xl font-black text-gray-900 dark:text-white mb-6 flex items-center">
@@ -130,7 +128,6 @@ const PermissionManagement = () => {
             </div>
           </div>
 
-          {/* Permissions Grid */}
           <div className="lg:col-span-3">
             <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-3xl p-8 shadow-2xl border border-white/40 dark:border-gray-700/60">
               <div className="flex items-center justify-between mb-8">

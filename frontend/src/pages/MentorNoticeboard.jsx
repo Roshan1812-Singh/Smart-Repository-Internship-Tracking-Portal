@@ -26,7 +26,7 @@ const MentorNoticeboard = () => {
   const markAsRead = async (notificationId) => {
     try {
       await API.put(`/admin/notifications/${notificationId}/read`);
-      setReadStatus(prev => ({ ...prev, [notificationId]: true }));
+      setReadStatus((prev) => ({ ...prev, [notificationId]: true }));
       toast.success("Marked as read");
     } catch (err) {
       toast.error("Failed to mark as read");
@@ -44,7 +44,7 @@ const MentorNoticeboard = () => {
     );
   }
 
-  const unreadCount = notifications.filter(n => !readStatus[n._id]).length;
+  const unreadCount = notifications.filter((n) => !readStatus[n._id]).length;
 
   return (
     <div className="p-6 max-w-4xl mx-auto min-h-screen bg-gradient-to-br from-emerald-900 via-teal-900/30 to-gray-900">
@@ -56,7 +56,7 @@ const MentorNoticeboard = () => {
           {unreadCount > 0 && (
             <div className="flex items-center gap-2 bg-orange-500/20 text-orange-300 px-4 py-1 rounded-full text-sm font-medium">
               <div className="w-2 h-2 bg-orange-400 rounded-full animate-pulse"></div>
-              {unreadCount} unread notice{unreadCount > 1 ? 's' : ''}
+              {unreadCount} unread notice{unreadCount > 1 ? "s" : ""}
             </div>
           )}
         </div>
@@ -71,7 +71,9 @@ const MentorNoticeboard = () => {
       {notifications.length === 0 ? (
         <div className="text-center py-20">
           <div className="text-6xl mb-6 opacity-20">📭</div>
-          <h2 className="text-2xl font-bold text-gray-400 mb-3">No notices yet</h2>
+          <h2 className="text-2xl font-bold text-gray-400 mb-3">
+            No notices yet
+          </h2>
           <p className="text-gray-500 max-w-md mx-auto">
             Check back later for administrative announcements and updates.
           </p>
@@ -81,25 +83,33 @@ const MentorNoticeboard = () => {
           {notifications.map((notice) => {
             const isRead = readStatus[notice._id];
             return (
-              <div 
-                key={notice._id} 
+              <div
+                key={notice._id}
                 className={`group backdrop-blur-xl border ${
-                  isRead 
-                    ? 'border-gray-700/50 bg-white/5' 
-                    : 'border-emerald-500/30 bg-gradient-to-r from-emerald-500/5 to-teal-500/5 shadow-lg shadow-emerald-500/10 ring-1 ring-emerald-500/20'
+                  isRead
+                    ? "border-gray-700/50 bg-white/5"
+                    : "border-emerald-500/30 bg-gradient-to-r from-emerald-500/5 to-teal-500/5 shadow-lg shadow-emerald-500/10 ring-1 ring-emerald-500/20"
                 } rounded-3xl p-8 transition-all hover:shadow-xl hover:shadow-emerald-500/20 hover:-translate-y-1`}
               >
                 <div className="flex items-start justify-between mb-4">
                   <div className="flex items-center gap-3">
-                    <div className={`w-3 h-3 rounded-full ${
-                      isRead ? 'bg-gray-500' : 'bg-emerald-400 animate-pulse'
-                    }`}></div>
-                    <span className={`px-3 py-1 text-xs font-bold rounded-full ${
-                      notice.targetRole === 'mentor' ? 'bg-emerald-100 text-emerald-800' :
-                      notice.targetRole === 'all' ? 'bg-green-100 text-green-800' :
-                      'bg-blue-100 text-blue-800'
-                    }`}>
-                      {notice.targetRole === 'all' ? 'ALL' : notice.targetRole.toUpperCase()}
+                    <div
+                      className={`w-3 h-3 rounded-full ${
+                        isRead ? "bg-gray-500" : "bg-emerald-400 animate-pulse"
+                      }`}
+                    ></div>
+                    <span
+                      className={`px-3 py-1 text-xs font-bold rounded-full ${
+                        notice.targetRole === "mentor"
+                          ? "bg-emerald-100 text-emerald-800"
+                          : notice.targetRole === "all"
+                            ? "bg-green-100 text-green-800"
+                            : "bg-blue-100 text-blue-800"
+                      }`}
+                    >
+                      {notice.targetRole === "all"
+                        ? "ALL"
+                        : notice.targetRole.toUpperCase()}
                     </span>
                   </div>
                   <div className="text-right text-xs text-gray-400">
@@ -114,7 +124,12 @@ const MentorNoticeboard = () => {
                   {notice.message}
                 </p>
                 <div className="flex items-center gap-4 text-sm text-gray-400">
-                  <span>By <span className="font-semibold text-white">{notice.sender?.name}</span></span>
+                  <span>
+                    By{" "}
+                    <span className="font-semibold text-white">
+                      {notice.sender?.name}
+                    </span>
+                  </span>
                   {isRead ? (
                     <span className="px-3 py-1 bg-emerald-500/20 text-emerald-300 rounded-full text-xs">
                       ✓ Read
@@ -138,4 +153,3 @@ const MentorNoticeboard = () => {
 };
 
 export default MentorNoticeboard;
-

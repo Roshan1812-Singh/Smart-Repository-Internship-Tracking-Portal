@@ -17,75 +17,18 @@ const { getNotifications, markNotificationRead } = require("../controllers/admin
 
 const { protect, authorizeRoles } = require("../middleware/authMiddleware");
 
-const multer = require("multer");
-const path = require("path");
-const fs = require("fs");
+const { makeUploader } = require("../config/upload");
 
-// Multer config for resumes
-const resumeStorage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    const uploadPath = path.join(__dirname, "..", "uploads/resumes");
-    if (!fs.existsSync(uploadPath)) {
-      fs.mkdirSync(uploadPath, { recursive: true });
-    }
-    cb(null, uploadPath);
-  },
-  filename: (req, file, cb) => {
-    cb(
-      null,
-      Date.now() +
-        "-" +
-        Math.round(Math.random() * 1e9) +
-        path.extname(file.originalname),
-    );
-  },
+const resumeUpload = makeUploader({
+  folder: "resumes",
+  maxSizeMB: 5,
+  allowedMimePrefixes: ["application/pdf", "application/msword", "image/"],
 });
 
-const profileStorage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    const uploadPath = path.join(__dirname, "..", "uploads/profiles");
-    if (!fs.existsSync(uploadPath)) {
-      fs.mkdirSync(uploadPath, { recursive: true });
-    }
-    cb(null, uploadPath);
-  },
-  filename: (req, file, cb) => {
-    cb(
-      null,
-      Date.now() +
-        "-" +
-        Math.round(Math.random() * 1e9) +
-        path.extname(file.originalname),
-    );
-  },
-});
-
-const resumeUpload = multer({
-  storage: resumeStorage,
-  limits: { fileSize: 5 * 1024 * 1024 },
-  fileFilter: (req, file, cb) => {
-    if (
-      file.mimetype.startsWith("application/pdf") ||
-      file.mimetype === "application/msword" ||
-      file.mimetype.startsWith("image/")
-    ) {
-      cb(null, true);
-    } else {
-      cb(new Error("Only PDF, DOC, images allowed"));
-    }
-  },
-});
-
-const profileUpload = multer({
-  storage: profileStorage,
-  limits: { fileSize: 2 * 1024 * 1024 },
-  fileFilter: (req, file, cb) => {
-    if (file.mimetype.startsWith("image/")) {
-      cb(null, true);
-    } else {
-      cb(new Error("Only images allowed for profile"));
-    }
-  },
+const profileUpload = makeUploader({
+  folder: "profiles",
+  maxSizeMB: 2,
+  allowedMimePrefixes: ["image/"],
 });
 
 // 🔥 NEW: Student self-registration
@@ -123,38 +66,10 @@ router.post(
 router.get("/tasks", protect, authorizeRoles("student"), getStudentTasks);
 
 // Report submission with document
-const reportStorage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    const uploadPath = path.join(__dirname, "..", "uploads/documents");
-    if (!fs.existsSync(uploadPath)) {
-      fs.mkdirSync(uploadPath, { recursive: true });
-    }
-    cb(null, uploadPath);
-  },
-  filename: (req, file, cb) => {
-    cb(
-      null,
-      Date.now() +
-        "-" +
-        Math.round(Math.random() * 1e9) +
-        path.extname(file.originalname),
-    );
-  },
-});
-
-const reportUpload = multer({
-  storage: reportStorage,
-  limits: { fileSize: 10 * 1024 * 1024 },
-  fileFilter: (req, file, cb) => {
-    if (
-      file.mimetype.startsWith("application/pdf") ||
-      file.mimetype.startsWith("image/")
-    ) {
-      cb(null, true);
-    } else {
-      cb(new Error("Only PDF and images allowed for reports"));
-    }
-  },
+const reportUpload = makeUploader({
+  folder: "documents",
+  maxSizeMB: 10,
+  allowedMimePrefixes: ["application/pdf", "image/"],
 });
 
 const { createReport } = require("../controllers/reportController");

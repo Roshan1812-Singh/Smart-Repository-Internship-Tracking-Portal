@@ -47,7 +47,6 @@ export const AuthProvider = ({ children }) => {
       console.warn("Logout API failed (non-critical):", error.message);
     }
 
-    // Clear storage + state
     localStorage.removeItem("user");
     localStorage.removeItem("refreshToken");
     sessionStorage.removeItem("refreshToken");

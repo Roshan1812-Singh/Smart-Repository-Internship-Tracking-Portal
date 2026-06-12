@@ -12,7 +12,6 @@ const Feedback = () => {
 
   const messagesEndRef = useRef(null);
 
-  // ✅ FIX: define user once
   const user =
     JSON.parse(localStorage.getItem("user")) ||
     JSON.parse(sessionStorage.getItem("user"));
@@ -88,7 +87,6 @@ const Feedback = () => {
         />
 
         <div className="flex flex-col h-[600px] lg:h-[700px] max-w-2xl mx-auto">
-          {/* Messages */}
           <div className="flex-1 overflow-y-auto space-y-4 p-6 backdrop-blur-xl rounded-3xl shadow-2xl border bg-gray-500 mb-6 text-black">
             {messages.map((msg, index) => {
               const isMe = msg.sender?._id === user?._id;
@@ -113,7 +111,6 @@ const Feedback = () => {
             <div ref={messagesEndRef} />
           </div>
 
-          {/* Input */}
           <Card className="p-6">
             <div className="flex gap-4">
               <textarea
@@ -142,7 +139,6 @@ const Feedback = () => {
           </Card>
         </div>
 
-        {/* Stats */}
         <motion.section initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
           <div className="grid md:grid-cols-3 gap-6">
             <Card className="text-center p-6 bg-gray-400 text-black">

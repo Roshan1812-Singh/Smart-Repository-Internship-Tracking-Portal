@@ -1,29 +1,11 @@
 const Internship = require("../models/Internship");
 
-const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
+const { makeUploader, getFileUrl } = require("../config/upload");
 
-
-// Multer config for document uploads
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    const uploadPath = path.join(__dirname, '..', 'uploads/documents');
-
-    if (!fs.existsSync(uploadPath)) {
-      fs.mkdirSync(uploadPath, { recursive: true });
-    }
-    cb(null, uploadPath);
-  },
-  filename: (req, file, cb) => {
-    cb(null, Date.now() + "-" + file.originalname);
-  }
-});
-
-const upload = multer({ 
-  storage: storage,
-  limits: { fileSize: 10 * 1024 * 1024 } // 10MB
-});
+// Document uploader (Cloudinary in prod, local disk in dev)
+const upload = makeUploader({ folder: "documents", maxSizeMB: 10 });
 
 exports.getInternshipStats = async (req, res) => {
   try {
@@ -73,21 +55,21 @@ exports.uploadDocument = async (req, res) => {
       internship.documents[documentType] = { url: "", verified: false };
     }
 
-    // Set new file URL (relative path)
-    const fileUrl = `/uploads/documents/${file.filename}`;
+    // Store the file URL (Cloudinary absolute URL or local relative path)
+    const url = getFileUrl(file, "documents");
     internship.documents[documentType] = {
       ...internship.documents[documentType],
-      url: fileUrl,
+      url,
       verified: false
     };
 
     await internship.save();
 
-    console.log(`✅ Document uploaded: ${documentType} -> ${fileUrl}`);
+    console.log(`✅ Document uploaded: ${documentType} -> ${url}`);
 
     res.json({ 
       message: "Document uploaded successfully",
-      url: fileUrl 
+      url 
     });
 
   } catch (error) {

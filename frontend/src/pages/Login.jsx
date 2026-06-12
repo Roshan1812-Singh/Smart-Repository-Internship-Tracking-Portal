@@ -64,7 +64,10 @@ const Login = () => {
       const storage = remember ? localStorage : sessionStorage;
       storage.setItem("accessToken", accessToken);
       storage.setItem("refreshToken", refreshToken);
-      storage.setItem("user", JSON.stringify({accessToken, refreshToken, user}));
+      storage.setItem(
+        "user",
+        JSON.stringify({ accessToken, refreshToken, user }),
+      );
 
       const verifyUser = JSON.parse(storage.getItem("user"));
       const verifyToken = storage.getItem("accessToken");
@@ -74,10 +77,8 @@ const Login = () => {
       });
 
       dispatch(setUser(user));
-      // Sync with AuthContext
       contextLogin({ accessToken, refreshToken, user });
 
-      // ✅ Direct navigation (NO reload, NO timeout)
       if (user.role === "admin" || user.role === "superadmin") {
         navigate("/admin", { replace: true });
       } else if (user.role === "student") {

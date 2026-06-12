@@ -41,6 +41,8 @@ const userSchema = new mongoose.Schema(
 
     isSuspended: { type: Boolean, default: false },
 
+    lastLogin: { type: Date },
+
     refreshToken: String,
 
     resetPasswordToken: {

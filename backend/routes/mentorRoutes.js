@@ -1,8 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const multer = require("multer");
-const path = require("path");
-const fs = require("fs");
+const { makeUploader } = require("../config/upload");
 
 const {
   createMentorProfile,
@@ -27,41 +25,8 @@ const { getNotifications, markNotificationRead } = require("../controllers/admin
 
 const { protect, authorizeRoles } = require("../middleware/authMiddleware");
 
-// Create upload directories if they don't exist
-const docsDir = path.join(__dirname, '../uploads/documents/mentor');
-const resourcesDir = path.join(__dirname, '../uploads/resources/mentor');
-if (!fs.existsSync(docsDir)) fs.mkdirSync(docsDir, { recursive: true });
-if (!fs.existsSync(resourcesDir)) fs.mkdirSync(resourcesDir, { recursive: true });
-
-// Multer configuration for documents
-const documentStorage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, docsDir);
-  },
-  filename: (req, file, cb) => {
-    cb(null, `${Date.now()}-${file.originalname}`);
-  }
-});
-
-const documentUpload = multer({
-  storage: documentStorage,
-  limits: { fileSize: 10 * 1024 * 1024 }
-});
-
-// Multer configuration for resources
-const resourceStorage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, resourcesDir);
-  },
-  filename: (req, file, cb) => {
-    cb(null, `${Date.now()}-${file.originalname}`);
-  }
-});
-
-const resourceUpload = multer({
-  storage: resourceStorage,
-  limits: { fileSize: 5 * 1024 * 1024 }
-});
+const documentUpload = makeUploader({ folder: "documents/mentor", maxSizeMB: 10 });
+const resourceUpload = makeUploader({ folder: "resources/mentor", maxSizeMB: 5 });
 
 router.post("/profile", protect, authorizeRoles("mentor"), createMentorProfile);
 router.put("/profile", protect, authorizeRoles("mentor"), updateMentorProfile);
@@ -112,15 +77,6 @@ router.post(
 
 router.get("/schedule", protect, authorizeRoles("mentor"), getMentorSchedule);
 router.put("/schedule", protect, authorizeRoles("mentor"), updateMentorSchedule);
-
-router.get("/student/tasks", protect, async (req, res) => {
-  try {
-    const tasks = await Progress.find({ student: req.user._id });
-    res.json(tasks);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-});
 
 // Notifications
 router.get("/notifications", protect, authorizeRoles("mentor"), getNotifications);

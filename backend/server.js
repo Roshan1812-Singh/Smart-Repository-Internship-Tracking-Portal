@@ -2,22 +2,20 @@ require("dotenv").config();
 
 const express = require("express");
 const cors = require("cors");
+const helmet = require("helmet");
+const rateLimit = require("express-rate-limit");
 const http = require("http");
 const { Server } = require("socket.io");
-
 const connectDB = require("./config/db");
-
 const authRoutes = require("./routes/authRoutes");
 const internshipRoutes = require("./routes/internshipRoutes");
 const dashboardRoutes = require("./routes/dashboardRoutes");
-
 const adminRoutes = require("./routes/adminRoutes");
 const mentorRoutes = require("./routes/mentorRoutes");
 const studentRoutes = require("./routes/studentRoutes");
 const progressRoutes = require("./routes/progressRoutes");
 const reportRoutes = require("./routes/reportRoutes");
 const messageRoutes = require("./routes/messageRoutes");
-
 const path = require('path');
 const multer = require('multer');
 
@@ -25,7 +23,6 @@ const app = express();
 
 connectDB();
 
-// Scheduled cleanup of expired notifications (runs every 24 hours)
 const { cleanupExpiredNotifications } = require("./controllers/adminController");
 setInterval(async () => {
   try {
@@ -37,22 +34,62 @@ setInterval(async () => {
   } catch (error) {
     console.error("❌ Scheduled cleanup failed:", error.message);
   }
-}, 24 * 60 * 60 * 1000); // 24 hours
+}, 24 * 60 * 60 * 1000);
 
+// Normalize an origin by stripping any trailing slash so that
+// "https://sritp.vercel.app/" and "https://sritp.vercel.app" both match.
+const normalizeOrigin = (o) => (o || "").trim().replace(/\/+$/, "");
+
+const corsOrigins = (
+  process.env.CORS_ORIGINS
+    ? process.env.CORS_ORIGINS.split(",")
+    : ["https://sritp.vercel.app", "http://localhost:5173", "http://localhost:3000"]
+)
+  .map(normalizeOrigin)
+  .filter(Boolean);
+
+const corsOptions = {
+  origin: (origin, callback) => {
+    // Allow non-browser clients (curl, server-to-server, health checks).
+    if (!origin) return callback(null, true);
+    if (corsOrigins.includes(normalizeOrigin(origin))) {
+      return callback(null, true);
+    }
+    console.warn(`CORS blocked origin: ${origin}. Allowed:`, corsOrigins);
+    return callback(new Error("Not allowed by CORS"));
+  },
+  credentials: true,
+};
+
+app.use(cors(corsOptions));
+// Ensure preflight requests succeed for every route.
+app.options(/.*/, cors(corsOptions));
+
+// Security headers. crossOriginResourcePolicy relaxed so the React app
+// (different origin) can load images/files served from /uploads.
 app.use(
-  cors({
-    origin: process.env.CLIENT_URL || "http://localhost:5173",
-    credentials: true,
+  helmet({
+    crossOriginResourcePolicy: { policy: "cross-origin" },
   })
 );
+
+// Trust the proxy (Render/Vercel) so rate limiting + secure cookies work.
+app.set("trust proxy", 1);
+
+// Throttle auth endpoints to slow brute-force attempts.
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 50,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { message: "Too many attempts. Please try again later." },
+});
 
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
-// Serve static uploads
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-// Global error handler for multer
 app.use((err, req, res, next) => {
   if (err instanceof multer.MulterError) {
     if (err.code === 'LIMIT_FILE_SIZE') {
@@ -67,8 +104,9 @@ const server = http.createServer(app);
 
 const io = new Server(server, {
   cors: {
-    origin: process.env.CLIENT_URL || "http://localhost:5173",
+    origin: corsOrigins,
     methods: ["GET", "POST"],
+    credentials: true,
   },
 });
 
@@ -77,12 +115,21 @@ app.set("io", io);
 io.on("connection", (socket) => {
   console.log("Client connected:", socket.id);
 
+  // Clients join a room named after their user id so that
+  // `io.to(userId).emit(...)` actually reaches them.
+  socket.on("join", (userId) => {
+    if (userId) {
+      socket.join(String(userId));
+      console.log(`Socket ${socket.id} joined room ${userId}`);
+    }
+  });
+
   socket.on("disconnect", () => {
     console.log("Client disconnected:", socket.id);
   });
 });
 
-app.use("/api/auth", authRoutes);
+app.use("/api/auth", authLimiter, authRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/internship", internshipRoutes);
 app.use("/api/dashboard", dashboardRoutes);
@@ -96,6 +143,18 @@ app.get("/", (req, res) => {
   res.json({
     success: true,
     message: "SRITP Backend Running 🚀",
+  });
+});
+
+// Lightweight health check for uptime monitors / Render.
+app.get("/api/health", (req, res) => {
+  const mongoose = require("mongoose");
+  res.json({
+    success: true,
+    status: "ok",
+    db: mongoose.connection.readyState === 1 ? "connected" : "disconnected",
+    uptime: process.uptime(),
+    timestamp: new Date().toISOString(),
   });
 });
 

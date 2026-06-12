@@ -7,6 +7,7 @@ const Internship = require("../models/Internship");
 const User = require("../models/User");
 const Message = require("../models/Message");
 const { protect, authorizeRoles } = require("../middleware/authMiddleware");
+const { getFileUrl } = require("../config/upload");
 
 
 exports.createMentorProfile = async (req, res) => {
@@ -514,7 +515,7 @@ exports.uploadMentorDocument = async (req, res) => {
 
     const document = {
       name: req.body.name || req.file.originalname,
-      url: `/uploads/documents/mentor/${req.file.filename}`,
+      url: getFileUrl(req.file, "documents/mentor"),
       uploadedAt: new Date()
     };
 
@@ -553,7 +554,7 @@ exports.uploadMentorResource = async (req, res) => {
     const resource = {
       name: req.body.name || req.file.originalname,
       type: req.body.type || 'Docs',
-      url: `/uploads/resources/mentor/${req.file.filename}`,
+      url: getFileUrl(req.file, "resources/mentor"),
       uploadedAt: new Date()
     };
 

@@ -2,7 +2,8 @@ const Student = require("../models/Student");
 const User = require("../models/User");
 const Progress = require("../models/Progress");
 const bcrypt = require("bcryptjs");
-const { sendCredentialsEmail } = require('../utils/sendEmail'); 
+const { sendCredentialsEmail } = require('../utils/sendEmail');
+const { getFileUrl } = require("../config/upload");
 
 exports.registerStudent = async (req, res) => {
   try {
@@ -287,9 +288,9 @@ exports.uploadProfileImage = async (req, res) => {
       return res.status(400).json({ message: "No file uploaded" });
     }
 
-    const profilePath = `/uploads/profiles/${req.file.filename}`;
+    const profilePath = getFileUrl(req.file, "profiles");
 
-    const student = await Student.findOneAndUpdate(
+    await Student.findOneAndUpdate(
       { user: req.user._id },
       { profileImage: profilePath },
       { new: true },
@@ -297,7 +298,7 @@ exports.uploadProfileImage = async (req, res) => {
 
     res.json({
       success: true,
-      profileUrl: `http://localhost:5000${profilePath}`,
+      profileUrl: profilePath,
     });
   } catch (error) {
     console.error("Profile upload error:", error);
@@ -311,9 +312,9 @@ exports.uploadResume = async (req, res) => {
       return res.status(400).json({ message: "No file uploaded" });
     }
 
-    const resumePath = `/uploads/resumes/${req.file.filename}`;
+    const resumePath = getFileUrl(req.file, "resumes");
 
-    const student = await Student.findOneAndUpdate(
+    await Student.findOneAndUpdate(
       { user: req.user._id },
       { resume: resumePath },
       { new: true },
@@ -321,7 +322,7 @@ exports.uploadResume = async (req, res) => {
 
     res.json({
       success: true,
-      resumeUrl: `http://localhost:5000${resumePath}`,
+      resumeUrl: resumePath,
     });
   } catch (error) {
     console.error("Upload error:", error);

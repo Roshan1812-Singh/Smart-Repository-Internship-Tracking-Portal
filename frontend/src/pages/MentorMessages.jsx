@@ -1,5 +1,5 @@
-import React, { useEffect, useState, useRef } from 'react';
-import { motion } from 'framer-motion';
+import React, { useEffect, useState, useRef } from "react";
+import { motion } from "framer-motion";
 import API from "../api/axios";
 import HeroHeader from "../components/ui/HeroHeader";
 import ChatBubble from "../components/ui/ChatBubble";
@@ -19,7 +19,9 @@ const MentorMessages = () => {
   const messagesEndRef = useRef(null);
 
   useEffect(() => {
-    const u = JSON.parse(localStorage.getItem("user")) || JSON.parse(sessionStorage.getItem("user"));
+    const u =
+      JSON.parse(localStorage.getItem("user")) ||
+      JSON.parse(sessionStorage.getItem("user"));
     setUser(u);
   }, []);
 
@@ -33,7 +35,9 @@ const MentorMessages = () => {
 
   const fetchData = async () => {
     try {
-      const token = localStorage.getItem("accessToken") || sessionStorage.getItem("accessToken");
+      const token =
+        localStorage.getItem("accessToken") ||
+        sessionStorage.getItem("accessToken");
       if (!token) {
         window.location.href = "/login";
         return;
@@ -41,7 +45,7 @@ const MentorMessages = () => {
 
       const [messagesRes, studentsRes] = await Promise.all([
         API.get("/messages"),
-        API.get("/mentor/assigned-students")
+        API.get("/mentor/assigned-students"),
       ]);
       setMessages(messagesRes.data.messages || []);
       setStudents(studentsRes.data.students || []);
@@ -59,36 +63,38 @@ const MentorMessages = () => {
       const response = await API.post("/messages", {
         receiver: selectedStudent._id,
         message: newMessage.message.trim(),
-        type: newMessage.type
+        type: newMessage.type,
       });
 
-      // Optimistic update
       const newMsg = {
-        _id: 'temp-' + Date.now(),
+        _id: "temp-" + Date.now(),
         sender: { _id: user._id, name: user.name },
         receiver: { _id: selectedStudent._id, name: selectedStudent.name },
         message: newMessage.message.trim(),
         type: newMessage.type,
-        createdAt: new Date()
+        createdAt: new Date(),
       };
-      setMessages(prev => [...prev, newMsg]);
-      
-      setNewMessage({ receiver: selectedStudent._id, message: "", type: "general" });
-      
-      // Refresh messages
+      setMessages((prev) => [...prev, newMsg]);
+
+      setNewMessage({
+        receiver: selectedStudent._id,
+        message: "",
+        type: "general",
+      });
+
       setTimeout(() => fetchData(), 500);
     } catch (err) {
-      console.error('Send error:', err);
-      alert('Failed: ' + (err.response?.data?.message || err.message));
+      console.error("Send error:", err);
+      alert("Failed: " + (err.response?.data?.message || err.message));
     }
   };
 
   const selectStudent = (student) => {
     setSelectedStudent(student);
-    setNewMessage(prev => ({ ...prev, receiver: student._id }));
-    // Filter for this student
-    const filtered = messages.filter(msg => 
-      msg.sender?._id === student._id || msg.receiver?._id === student._id
+    setNewMessage((prev) => ({ ...prev, receiver: student._id }));
+    const filtered = messages.filter(
+      (msg) =>
+        msg.sender?._id === student._id || msg.receiver?._id === student._id,
     );
     setMessages(filtered);
   };
@@ -102,16 +108,19 @@ const MentorMessages = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50">
       <HeroHeader title="Messages" subtitle="Chat with students" />
-      
+
       <div className="max-w-6xl mx-auto grid lg:grid-cols-4 gap-8">
-        {/* Students */}
         <div className="lg:col-span-1 text-black bg-white rounded-3xl shadow-2xl p-6">
-          <h2 className="text-2xl font-bold mb-6">Students ({students.length})</h2>
+          <h2 className="text-2xl font-bold mb-6">
+            Students ({students.length})
+          </h2>
           {students.map((student) => (
             <div
               key={student._id}
               className={`p-4 rounded-2xl mb-4 cursor-pointer hover:bg-blue-50 ${
-                selectedStudent?._id === student._id ? 'bg-blue-100 border-2 border-blue-300' : ''
+                selectedStudent?._id === student._id
+                  ? "bg-blue-100 border-2 border-blue-300"
+                  : ""
               }`}
               onClick={() => selectStudent(student)}
             >
@@ -121,11 +130,10 @@ const MentorMessages = () => {
           ))}
         </div>
 
-        {/* Chat */}
         <div className="lg:col-span-3 text-black bg-white rounded-3xl shadow-2xl flex flex-col h-[70vh]">
           <div className="p-6 border-b">
             <h2 className="text-2xl font-bold">
-              {selectedStudent?.name || 'Select student'}
+              {selectedStudent?.name || "Select student"}
             </h2>
           </div>
 
@@ -151,7 +159,9 @@ const MentorMessages = () => {
             <div className="flex gap-3">
               <textarea
                 value={newMessage.message}
-                onChange={(e) => setNewMessage({ ...newMessage, message: e.target.value })}
+                onChange={(e) =>
+                  setNewMessage({ ...newMessage, message: e.target.value })
+                }
                 placeholder="Type message..."
                 className="flex-1 p-4 border rounded-xl resize-none bg-gray-500"
                 rows="2"

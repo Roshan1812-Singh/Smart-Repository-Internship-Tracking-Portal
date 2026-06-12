@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import { motion } from "framer-motion";
 import API from "../api/axios";
 import toast from "react-hot-toast";
+import { fileUrl } from "../config";
 import HeroHeader from "../components/ui/HeroHeader";
 import Badge from "../components/ui/Badge";
 import Card from "../components/ui/Card";
@@ -129,7 +130,7 @@ const Documents = () => {
             {doc?.url && (
               <>
                 <a
-                  href={`http://localhost:5000${doc.url}`}
+                  href={fileUrl(doc.url)}
                   target="_blank"
                   rel="noreferrer"
                   className="px-3 py-1 bg-blue-500 hover:bg-blue-600 rounded text-sm"
@@ -161,7 +162,6 @@ const Documents = () => {
           </div>
         </div>
 
-        {/* Hidden input */}
         {doc?.url && (
           <input
             ref={(el) => {
@@ -188,13 +188,12 @@ const Documents = () => {
   return (
     <div className="min-h-screen py-12 px-4 md:px-8 lg:px-12 bg-gradient-to-br from-indigo-50 via-blue-50 to-emerald-50 dark:from-gray-900 dark:via-slate-900/50 dark:to-indigo-900/20">
       <div className="max-w-4xl mx-auto space-y-12">
-        {/* Hero */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           className="text-center"
         >
-          <HeroHeader 
+          <HeroHeader
             title="📁 Document Upload"
             subtitle="Upload required internship documents and track verification status."
           />
@@ -202,8 +201,7 @@ const Documents = () => {
 
         {internship ? (
           <div className="space-y-12">
-            {/* Upload Sections */}
-            <motion.section 
+            <motion.section
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
             >
@@ -212,11 +210,15 @@ const Documents = () => {
               </h3>
               <div className="grid md:grid-cols-3 gap-8">
                 {[
-                  { key: 'offerLetter', label: 'Offer Letter', icon: '📜' },
-                  { key: 'completionCertificate', label: 'Completion Certificate', icon: '🏆' },
-                  { key: 'finalReport', label: 'Final Report', icon: '📊' }
+                  { key: "offerLetter", label: "Offer Letter", icon: "📜" },
+                  {
+                    key: "completionCertificate",
+                    label: "Completion Certificate",
+                    icon: "🏆",
+                  },
+                  { key: "finalReport", label: "Final Report", icon: "📊" },
                 ].map(({ key, label, icon }) => (
-                  <motion.div 
+                  <motion.div
                     key={key}
                     className="group relative"
                     whileHover={{ y: -8 }}
@@ -228,17 +230,25 @@ const Documents = () => {
                       onChange={(e) => handleFileChange(key, e.target.files[0])}
                       className="hidden"
                     />
-                    <label 
+                    <label
                       htmlFor={`upload-${key}`}
                       className="block w-full p-12 border-4 border-dashed border-gray-300 dark:border-gray-600 rounded-3xl cursor-pointer hover:border-primary/60 hover:bg-primary/5 transition-all shadow-xl hover:shadow-2xl text-center h-64 flex flex-col items-center justify-center bg-gradient-to-br from-white/70 to-gray-50/70 dark:from-gray-800/70 dark:to-gray-900/70 backdrop-blur-xl group-hover:scale-[1.02]"
                     >
-                      <div className="text-6xl mb-6 group-hover:scale-110 transition-transform">{icon}</div>
-                      <h4 className="text-2xl font-bold text-gray-900 dark:text-white mb-2 group-hover:text-primary">{label}</h4>
-                      <p className="text-lg text-gray-600 dark:text-gray-400 mb-6">Click to upload file</p>
+                      <div className="text-6xl mb-6 group-hover:scale-110 transition-transform">
+                        {icon}
+                      </div>
+                      <h4 className="text-2xl font-bold text-gray-900 dark:text-white mb-2 group-hover:text-primary">
+                        {label}
+                      </h4>
+                      <p className="text-lg text-gray-600 dark:text-gray-400 mb-6">
+                        Click to upload file
+                      </p>
                       <div className="w-24 h-24 border-4 border-dashed border-primary/30 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:border-primary/60 transition-all">
                         <span className="text-2xl">⬆️</span>
                       </div>
-                      <p className="text-sm font-medium text-primary uppercase tracking-wide">PDF, Image</p>
+                      <p className="text-sm font-medium text-primary uppercase tracking-wide">
+                        PDF, Image
+                      </p>
                     </label>
                   </motion.div>
                 ))}
@@ -253,8 +263,7 @@ const Documents = () => {
               </motion.button>
             </motion.section>
 
-            {/* Document Status */}
-            <motion.section 
+            <motion.section
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
             >
@@ -263,29 +272,52 @@ const Documents = () => {
               </h3>
               <div className="grid md:grid-cols-3 gap-8">
                 {[
-                  { key: 'offerLetter', label: 'Offer Letter', color: 'blue' },
-                  { key: 'completionCertificate', label: 'Completion Certificate', color: 'emerald' },
-                  { key: 'finalReport', label: 'Final Report', color: 'purple' }
+                  { key: "offerLetter", label: "Offer Letter", color: "blue" },
+                  {
+                    key: "completionCertificate",
+                    label: "Completion Certificate",
+                    color: "emerald",
+                  },
+                  {
+                    key: "finalReport",
+                    label: "Final Report",
+                    color: "purple",
+                  },
                 ].map(({ key, label, color }) => {
                   const doc = internship?.documents?.[key];
-                  const status = doc?.verified ? 'verified' : doc?.url ? 'uploaded' : 'pending';
+                  const status = doc?.verified
+                    ? "verified"
+                    : doc?.url
+                      ? "uploaded"
+                      : "pending";
                   return (
-                    <motion.div 
+                    <motion.div
                       key={key}
                       whileHover={{ scale: 1.05 }}
-                      className={`group p-8 rounded-3xl shadow-xl hover:shadow-2xl transition-all text-center ${status === 'verified' ? `bg-${color}-50 dark:bg-${color}-900/30 border-4 border-${color}-200` : status === 'uploaded' ? `bg-yellow-50 dark:bg-yellow-900/30 border-4 border-yellow-200` : `bg-gray-50 dark:bg-gray-900/50 border-4 border-gray-200`}`}
+                      className={`group p-8 rounded-3xl shadow-xl hover:shadow-2xl transition-all text-center ${status === "verified" ? `bg-${color}-50 dark:bg-${color}-900/30 border-4 border-${color}-200` : status === "uploaded" ? `bg-yellow-50 dark:bg-yellow-900/30 border-4 border-yellow-200` : `bg-gray-50 dark:bg-gray-900/50 border-4 border-gray-200`}`}
                     >
-                      <div className={`w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-${color}-500 to-${color}-600 rounded-3xl flex items-center justify-center shadow-2xl group-hover:shadow-white/20 transition-all`}>
+                      <div
+                        className={`w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-${color}-500 to-${color}-600 rounded-3xl flex items-center justify-center shadow-2xl group-hover:shadow-white/20 transition-all`}
+                      >
                         <span className="text-3xl font-bold text-white drop-shadow-lg">
-                          {status === 'verified' ? '✅' : status === 'uploaded' ? '⏳' : '📤'}
+                          {status === "verified"
+                            ? "✅"
+                            : status === "uploaded"
+                              ? "⏳"
+                              : "📤"}
                         </span>
                       </div>
-                      <h4 className="text-2xl font-bold text-gray-900 dark:text-white mb-4 capitalize">{label}</h4>
-                      <Badge status={status} className="mx-auto px-6 py-3 text-lg font-bold shadow-lg !text-white" />
+                      <h4 className="text-2xl font-bold text-gray-900 dark:text-white mb-4 capitalize">
+                        {label}
+                      </h4>
+                      <Badge
+                        status={status}
+                        className="mx-auto px-6 py-3 text-lg font-bold shadow-lg !text-white"
+                      />
                       {doc?.url ? (
                         <div className="mt-6 space-y-2">
-                          <motion.a 
-                            href={`http://localhost:5000${doc.url}`}
+                          <motion.a
+                            href={fileUrl(doc.url)}
                             target="_blank"
                             rel="noopener noreferrer"
                             whileHover={{ scale: 1.05 }}
@@ -293,7 +325,7 @@ const Documents = () => {
                           >
                             👁️ View Document
                           </motion.a>
-                          <motion.button 
+                          <motion.button
                             whileHover={{ scale: 1.02 }}
                             onClick={() => triggerReplace(key)}
                             className="w-full bg-gradient-to-r from-orange-500 to-rose-600 text-white py-3 px-6 rounded-2xl font-bold shadow-lg hover:shadow-xl transition-all"
@@ -302,7 +334,9 @@ const Documents = () => {
                           </motion.button>
                         </div>
                       ) : (
-                        <p className="text-gray-600 dark:text-gray-400 mt-4 text-sm italic">Upload your document above</p>
+                        <p className="text-gray-600 dark:text-gray-400 mt-4 text-sm italic">
+                          Upload your document above
+                        </p>
                       )}
                     </motion.div>
                   );
@@ -311,7 +345,7 @@ const Documents = () => {
             </motion.section>
           </div>
         ) : (
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             className="text-center py-24 max-w-2xl mx-auto bg-white/70 dark:bg-gray-900/70 backdrop-blur-xl rounded-3xl p-16 shadow-2xl border border-white/50"
@@ -321,7 +355,8 @@ const Documents = () => {
               No Internship Found
             </h2>
             <p className="text-xl text-gray-600 dark:text-gray-400 mb-12 leading-relaxed">
-              Documents can be uploaded once you have an approved internship. Check your applications page.
+              Documents can be uploaded once you have an approved internship.
+              Check your applications page.
             </p>
           </motion.div>
         )}

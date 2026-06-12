@@ -164,7 +164,6 @@ const PerformanceEvaluation = () => {
                   )}
                 </div>
 
-                {/* Ratings */}
                 <div>
                   <label className="block text-xl font-bold text-gray-900 mb-8">
                     Performance Ratings (1-10)

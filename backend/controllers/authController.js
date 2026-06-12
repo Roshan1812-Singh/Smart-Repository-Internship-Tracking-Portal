@@ -107,6 +107,7 @@ exports.login = async (req, res) => {
     const refreshToken = generateRefreshToken(user);
 
     user.refreshToken = refreshToken;
+    user.lastLogin = new Date();
     await user.save();
 
     res.json({

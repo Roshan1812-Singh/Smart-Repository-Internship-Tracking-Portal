@@ -22,6 +22,11 @@ const systemConfigSchema = new mongoose.Schema(
       maintenanceMode: { type: Boolean, default: false },
       allowRegistration: { type: Boolean, default: true },
     },
+
+    // Persisted role -> permissions mapping (editable by superadmin).
+    rolePermissions: {
+      type: mongoose.Schema.Types.Mixed,
+    },
   },
   { timestamps: true }
 );

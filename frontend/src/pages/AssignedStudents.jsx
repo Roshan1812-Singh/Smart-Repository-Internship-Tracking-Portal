@@ -12,13 +12,11 @@ const AssignedStudents = () => {
   const [loading, setLoading] = useState(true);
   const [selectedStudent, setSelectedStudent] = useState(null);
   
-  // Quick Actions modals state
   const [showAssignModal, setShowAssignModal] = useState(false);
   const [showBulkModal, setShowBulkModal] = useState(false);
   const [showReportModal, setShowReportModal] = useState(false);
   const [selectedStudentForTask, setSelectedStudentForTask] = useState(null);
   
-  // Forms state
   const [taskForm, setTaskForm] = useState({ taskTitle: '', description: '', deadline: '' });
   const [bulkMessage, setBulkMessage] = useState('');
   const [selectedReportStudentId, setSelectedReportStudentId] = useState('');
@@ -137,7 +135,6 @@ const AssignedStudents = () => {
         onRowClick={handleRowClick}
       />
 
-      {/* Quick Actions Bar */}
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -172,7 +169,6 @@ const AssignedStudents = () => {
         </div>
       </motion.div>
 
-      {/* Generate Report Modal */}
       {showReportModal && (
         <motion.div
           initial={{ opacity: 0 }}
@@ -200,7 +196,6 @@ const AssignedStudents = () => {
               </div>
             </div>
             <div className="p-8 space-y-6">
-              {/* Student Selector */}
               <div>
                 <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">
                   Select Student for Report
@@ -219,7 +214,6 @@ const AssignedStudents = () => {
                 </select>
               </div>
               
-              {/* Generate Button */}
               <motion.button
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
@@ -233,7 +227,6 @@ const AssignedStudents = () => {
                     const response = await API.get(`/mentor/student-report/${selectedReportStudentId}`);
                     const reportData = response.data;
                     
-                    // Create JSON download
                     const blob = new Blob([JSON.stringify(reportData, null, 2)], { type: 'application/json' });
                     const url = URL.createObjectURL(blob);
                     const a = document.createElement('a');
@@ -265,7 +258,6 @@ const AssignedStudents = () => {
         </motion.div>
       )}
 
-      {/* Bulk Message Modal */}
       {showBulkModal && (
         <motion.div
           initial={{ opacity: 0 }}
@@ -331,7 +323,6 @@ const AssignedStudents = () => {
         </motion.div>
       )}
 
-      {/* Assign New Task Modal */}
       {showAssignModal && (
         <motion.div
           initial={{ opacity: 0 }}
@@ -359,7 +350,6 @@ const AssignedStudents = () => {
               </div>
             </div>
             <div className="p-8 space-y-6">
-              {/* Student Selector */}
               <div>
                 <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">
                   Select Student
@@ -378,7 +368,6 @@ const AssignedStudents = () => {
                 </select>
               </div>
 
-              {/* Task Title */}
               <div>
                 <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">
                   Task Title *
@@ -392,7 +381,6 @@ const AssignedStudents = () => {
                 />
               </div>
 
-              {/* Description */}
               <div>
                 <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">
                   Description
@@ -406,7 +394,6 @@ const AssignedStudents = () => {
                 />
               </div>
 
-              {/* Deadline */}
               <div>
                 <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">
                   Deadline (Optional)
@@ -419,7 +406,6 @@ const AssignedStudents = () => {
                 />
               </div>
 
-              {/* Submit Button */}
               <motion.button
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
@@ -451,7 +437,6 @@ const AssignedStudents = () => {
         </motion.div>
       )}
 
-      {/* Selected Student Details Modal - Simplified */}
       {selectedStudent && (
         <motion.div
           initial={{ opacity: 0 }}

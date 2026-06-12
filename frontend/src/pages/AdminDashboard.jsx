@@ -40,10 +40,8 @@ const AdminDashboard = () => {
 
   return (
     <div className="p-6 space-y-10">
-      {/* Title */}
       <h1 className="text-3xl font-bold">Admin Dashboard</h1>
 
-      {/* Top Stats */}
       <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
         <div className="bg-blue-500 p-4 rounded-lg">
           <h3 className="text-lg font-semibold">Total Students</h3>
@@ -71,7 +69,6 @@ const AdminDashboard = () => {
         </div>
       </div>
 
-      {/* Management Links */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         <Link
           to="/admin/students"
@@ -122,14 +119,11 @@ const AdminDashboard = () => {
         </Link>
       </div>
 
-      {/* Analytics */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Status Distribution */}
         <div className="bg-gray-500 rounded-xl shadow-lg p-6">
           <h3 className="text-lg font-bold mb-4">Status Distribution</h3>
 
           <div className="space-y-4">
-            {/* Approved */}
             <div>
               <div className="flex justify-between mb-1">
                 <span>Approved</span>
@@ -151,7 +145,6 @@ const AdminDashboard = () => {
               </div>
             </div>
 
-            {/* Pending */}
             <div>
               <div className="flex justify-between mb-1">
                 <span>Pending</span>
@@ -173,7 +166,6 @@ const AdminDashboard = () => {
               </div>
             </div>
 
-            {/* Rejected */}
             <div>
               <div className="flex justify-between mb-1">
                 <span>Rejected</span>
@@ -197,7 +189,6 @@ const AdminDashboard = () => {
           </div>
         </div>
 
-        {/* Quick Stats */}
         <div className="bg-gray-500 rounded-xl shadow-lg p-6">
           <h3 className="text-lg font-bold mb-4">Quick Stats</h3>
 
