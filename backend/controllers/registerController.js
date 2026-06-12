@@ -1,4 +1,6 @@
 const crypto = require("crypto");
+const User = require("../models/User");
+const Student = require("../models/Student");
 // const { sendCredentialsEmail } = require("../utils/emailService");
 
 exports.register = async (req, res) => {

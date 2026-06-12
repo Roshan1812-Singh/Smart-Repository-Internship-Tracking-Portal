@@ -395,9 +395,11 @@ exports.sendBulkMessage = async (req, res) => {
     const Message = require("../models/Message");
     const sentMessages = [];
     for (const student of students) {
+      // `student.user` is an unpopulated ObjectId here — use it directly.
+      if (!student.user) continue;
       const bulkMsg = await Message.create({
         sender: req.user._id,
-        receiver: student.user._id,
+        receiver: student.user,
         message,
         type: "announcement",
       });

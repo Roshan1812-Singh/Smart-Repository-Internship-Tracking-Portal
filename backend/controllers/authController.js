@@ -193,20 +193,34 @@ exports.resetPassword = async (req, res) => {
 };
 
 exports.sendOtp = async (req, res) => {
-  const { email } = req.body;
+  try {
+    const { email } = req.body;
 
-  const user = await User.findOne({ email });
+    if (!email) {
+      return res.status(400).json({ message: "Email required" });
+    }
 
-  const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    const user = await User.findOne({ email });
 
-  user.otp = await bcrypt.hash(otp, 10);
-  user.otpExpire = Date.now() + 10 * 60 * 1000;
+    // Don't reveal whether the email exists; respond the same either way.
+    if (!user) {
+      return res.json({ success: true });
+    }
 
-  await user.save();
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
 
-  await sendOtpEmail(email, otp);
+    user.otp = await bcrypt.hash(otp, 10);
+    user.otpExpire = Date.now() + 10 * 60 * 1000;
 
-  res.json({ success: true });
+    await user.save();
+
+    await sendOtpEmail(email, otp);
+
+    res.json({ success: true });
+  } catch (err) {
+    console.error("SEND OTP ERROR:", err);
+    res.status(500).json({ message: "Failed to send OTP" });
+  }
 };
 
 // 🔄 REFRESH TOKEN ENDPOINT
