@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">SRITP</string>
+    <string name="title_activity_main">SRITP</string>
+    <string name="package_name">com.sritp.app</string>
+    <string name="custom_url_scheme">com.sritp.app</string>
+</resources>

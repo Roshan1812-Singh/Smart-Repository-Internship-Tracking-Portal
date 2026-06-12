@@ -40,13 +40,23 @@ setInterval(async () => {
 // "https://sritp.vercel.app/" and "https://sritp.vercel.app" both match.
 const normalizeOrigin = (o) => (o || "").trim().replace(/\/+$/, "");
 
-const corsOrigins = (
-  process.env.CORS_ORIGINS
+// Origins the native mobile app (Capacitor) serves its WebView from.
+// Android uses https://localhost by default; capacitor:// is the iOS scheme.
+const APP_NATIVE_ORIGINS = [
+  "https://localhost",
+  "http://localhost",
+  "capacitor://localhost",
+];
+
+const corsOrigins = [
+  ...(process.env.CORS_ORIGINS
     ? process.env.CORS_ORIGINS.split(",")
-    : ["https://sritp.vercel.app", "http://localhost:5173", "http://localhost:3000"]
-)
+    : ["https://sritp.vercel.app", "http://localhost:5173", "http://localhost:3000"]),
+  ...APP_NATIVE_ORIGINS,
+]
   .map(normalizeOrigin)
-  .filter(Boolean);
+  .filter(Boolean)
+  .filter((o, i, arr) => arr.indexOf(o) === i);
 
 const corsOptions = {
   origin: (origin, callback) => {
