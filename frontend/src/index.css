@@ -1,5 +1,15 @@
 @import "tailwindcss";
 
+/* Tailwind v4 does not auto-load tailwind.config.js. Load it explicitly so
+   `darkMode: "class"` and the custom theme colors (primary, secondary, ...)
+   actually work. Without this, dark: variants follow the OS setting and
+   toggling the .dark class on <html> has no visual effect. */
+@config "../tailwind.config.js";
+
+/* Belt-and-suspenders: ensure the class strategy is active even if the
+   config compatibility layer changes in a future Tailwind v4 release. */
+@custom-variant dark (&:where(.dark, .dark *));
+
 @keyframes floatSlow {
   0% { transform: translateY(0px) translateX(0px); }
   50% { transform: translateY(-20px) translateX(20px); }
