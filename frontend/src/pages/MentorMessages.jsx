@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import { motion } from "framer-motion";
 import API from "../api/axios";
+import { getStoredUser } from "../utils/auth";
 import HeroHeader from "../components/ui/HeroHeader";
 import ChatBubble from "../components/ui/ChatBubble";
 import Badge from "../components/ui/Badge";
@@ -19,10 +20,7 @@ const MentorMessages = () => {
   const messagesEndRef = useRef(null);
 
   useEffect(() => {
-    const u =
-      JSON.parse(localStorage.getItem("user")) ||
-      JSON.parse(sessionStorage.getItem("user"));
-    setUser(u);
+    setUser(getStoredUser());
   }, []);
 
   useEffect(() => {

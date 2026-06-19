@@ -42,10 +42,11 @@ const SuperAdminLogin = () => {
 
       localStorage.setItem("accessToken", accessToken);
       localStorage.setItem("refreshToken", refreshToken);
-      localStorage.setItem("user", JSON.stringify({accessToken, refreshToken, user}));
+      // Store the plain user object so user.role / user.name work everywhere.
+      localStorage.setItem("user", JSON.stringify(user));
 
       dispatch(setUser(user));
-      contextLogin({accessToken, refreshToken, user});
+      contextLogin(user);
 
       navigate("/superadmin");
     } catch (err) {

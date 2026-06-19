@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import API from "../api/axios";
+import { getStoredUser } from "../utils/auth";
 
 const AuthContext = createContext();
 
@@ -8,18 +9,8 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    try {
-      const storedUser = localStorage.getItem("user");
-
-      if (storedUser && storedUser !== "undefined") {
-        const parsedUser = JSON.parse(storedUser);
-        setUser(parsedUser);
-      }
-    } catch (error) {
-      console.error("Invalid user data in localStorage");
-      localStorage.removeItem("user");
-    }
-
+    const storedUser = getStoredUser();
+    if (storedUser) setUser(storedUser);
     setLoading(false);
   }, []);
 

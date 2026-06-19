@@ -2,13 +2,14 @@ import React, { useEffect, useState, useRef } from "react";
 import { motion } from "framer-motion";
 import API from "../api/axios";
 import { fileUrl } from "../config";
+import { getStoredUser } from "../utils/auth";
 import HeroHeader from "../components/ui/HeroHeader";
 import Card from "../components/ui/Card";
 import Badge from "../components/ui/Badge";
 
 const Profile = () => {
   const [profile, setProfile] = useState({});
-  const user = JSON.parse(localStorage.getItem("user"));
+  const user = getStoredUser();
 
   useEffect(() => {
     const fetchProfile = async () => {

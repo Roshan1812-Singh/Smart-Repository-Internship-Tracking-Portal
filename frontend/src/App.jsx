@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setUser } from "./redux/authSlice";
+import { getStoredUser } from "./utils/auth";
 
 import Login from "./pages/Login";
 import PublicStudentRegister from "./pages/PublicStudentRegister"; // ✅ FIXED: No auth
@@ -56,18 +57,8 @@ function App() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    try {
-      const storedUser =
-        localStorage.getItem("user") || sessionStorage.getItem("user");
-
-      if (storedUser && storedUser !== "undefined") {
-        const parsedUser = JSON.parse(storedUser);
-        dispatch(setUser(parsedUser));
-      }
-    } catch (error) {
-      localStorage.removeItem("user");
-      sessionStorage.removeItem("user");
-    }
+    const storedUser = getStoredUser();
+    if (storedUser) dispatch(setUser(storedUser));
   }, [dispatch]);
 
   return (

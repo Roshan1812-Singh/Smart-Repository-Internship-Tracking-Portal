@@ -62,22 +62,19 @@ const Login = () => {
       console.log("👤 User data:", user);
 
       const storage = remember ? localStorage : sessionStorage;
+      const other = remember ? sessionStorage : localStorage;
+      // Avoid a stale session lingering in the other storage.
+      other.removeItem("accessToken");
+      other.removeItem("refreshToken");
+      other.removeItem("user");
+
       storage.setItem("accessToken", accessToken);
       storage.setItem("refreshToken", refreshToken);
-      storage.setItem(
-        "user",
-        JSON.stringify({ accessToken, refreshToken, user }),
-      );
-
-      const verifyUser = JSON.parse(storage.getItem("user"));
-      const verifyToken = storage.getItem("accessToken");
-      console.log("💾 Storage verified:", {
-        hasToken: !!verifyToken,
-        userRole: verifyUser?.role,
-      });
+      // Store the plain user object so user.role / user.name work everywhere.
+      storage.setItem("user", JSON.stringify(user));
 
       dispatch(setUser(user));
-      contextLogin({ accessToken, refreshToken, user });
+      contextLogin(user);
 
       if (user.role === "admin" || user.role === "superadmin") {
         navigate("/admin", { replace: true });

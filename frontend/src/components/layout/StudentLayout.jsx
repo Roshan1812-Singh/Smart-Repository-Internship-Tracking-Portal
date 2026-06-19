@@ -1,5 +1,6 @@
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
+import { getStoredUser } from "../../utils/auth";
 
 const StudentLayout = () => {
   const location = useLocation();
@@ -7,8 +8,7 @@ const StudentLayout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
 
-  const storedUser = localStorage.getItem("user") || sessionStorage.getItem("user");
-  const user = storedUser ? JSON.parse(storedUser) : null;
+  const user = getStoredUser();
 
   useEffect(() => {
     const theme = localStorage.getItem("theme");

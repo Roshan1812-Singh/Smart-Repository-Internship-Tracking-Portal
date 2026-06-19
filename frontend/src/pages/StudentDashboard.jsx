@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import API from "../api/axios";
+import { getStoredUser } from "../utils/auth";
 import HeroHeader from "../components/ui/HeroHeader";
 import StatCard from "../components/ui/StatCard";
 import ProgressBar from "../components/ui/ProgressBar";
@@ -22,7 +23,7 @@ const StudentDashboard = () => {
   const [completedTasks, setCompletedTasks] = useState(0);
   const [notices, setNotices] = useState([]);
 
-  const user = JSON.parse(localStorage.getItem("user"));
+  const user = getStoredUser();
 
   useEffect(() => {
     const fetchData = async () => {

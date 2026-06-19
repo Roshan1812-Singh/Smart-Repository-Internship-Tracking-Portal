@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import { motion } from "framer-motion";
 import API from "../api/axios";
+import { getStoredUser } from "../utils/auth";
 import HeroHeader from "../components/ui/HeroHeader";
 import Card from "../components/ui/Card";
 import ChatBubble from "../components/ui/ChatBubble";
@@ -12,9 +13,7 @@ const Feedback = () => {
 
   const messagesEndRef = useRef(null);
 
-  const user =
-    JSON.parse(localStorage.getItem("user")) ||
-    JSON.parse(sessionStorage.getItem("user"));
+  const user = getStoredUser();
 
   useEffect(() => {
     const fetchData = async () => {

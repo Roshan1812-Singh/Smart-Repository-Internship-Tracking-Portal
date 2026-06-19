@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import API from "../api/axios";
 import toast from "react-hot-toast";
+import { getStoredUser } from "../utils/auth";
 
 const SuperAdminDashboard = () => {
   const [stats, setStats] = useState({
@@ -16,10 +17,8 @@ const SuperAdminDashboard = () => {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    const storedUser = localStorage.getItem("user");
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-    }
+    const storedUser = getStoredUser();
+    if (storedUser) setUser(storedUser);
     fetchStats();
   }, []);
 

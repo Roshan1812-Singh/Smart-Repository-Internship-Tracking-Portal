@@ -1,5 +1,6 @@
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
+import { getStoredUser } from "../../utils/auth";
 
 const MentorLayout = () => {
   const location = useLocation();
@@ -7,17 +8,7 @@ const MentorLayout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
 
-  // ✅ FIX: Properly parse user
-  let user = null;
-  try {
-    const storedUser =
-      localStorage.getItem("user") || sessionStorage.getItem("user");
-    if (storedUser && storedUser !== "undefined") {
-      user = JSON.parse(storedUser);
-    }
-  } catch (err) {
-    console.error("User parse error:", err);
-  }
+  const user = getStoredUser();
 
   useEffect(() => {
     const theme = localStorage.getItem("theme");

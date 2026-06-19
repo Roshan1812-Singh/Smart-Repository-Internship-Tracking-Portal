@@ -1,5 +1,26 @@
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
+import { getStoredUser } from "../../utils/auth";
+
+const ADMIN_LINKS = [
+  ["/admin", "Dashboard"],
+  ["/admin/students", "Student Management"],
+  ["/admin/mentors", "Mentor Management"],
+  ["/admin/internships", "Internship Tracking"],
+  ["/admin/reports", "Reports & Analytics"],
+  ["/admin/notifications", "Notifications"],
+  ["/admin/documents", "Document Verification"],
+];
+
+const SUPERADMIN_LINKS = [
+  ["/superadmin", "Dashboard"],
+  ["/superadmin/admin-management", "Admin Management"],
+  ["/superadmin/permission-management", "Permission Management"],
+  ["/superadmin/user-management", "User Management"],
+  ["/superadmin/system-config", "System Configuration"],
+  ["/superadmin/data-backup", "Data Backup"],
+  ["/superadmin/security-controls", "Security Controls"],
+];
 
 const AdminLayout = () => {
   const location = useLocation();
@@ -7,7 +28,9 @@ const AdminLayout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
 
-  const user = JSON.parse(localStorage.getItem("user"));
+  const user = getStoredUser();
+  const isSuperAdmin = location.pathname.startsWith("/superadmin");
+  const links = isSuperAdmin ? SUPERADMIN_LINKS : ADMIN_LINKS;
 
   useEffect(() => {
     const theme = localStorage.getItem("theme");
@@ -32,9 +55,10 @@ const AdminLayout = () => {
 
   const navItem = (to, label) => (
     <Link
+      key={to}
       to={to}
       onClick={() => setSidebarOpen(false)}
-      className={`block px-4 py-2 rounded-lg transition $
+      className={`block px-4 py-2 rounded-lg transition ${
         location.pathname === to
           ? "bg-primary text-white"
           : "hover:bg-gray-200 dark:hover:bg-gray-700"
@@ -51,10 +75,12 @@ const AdminLayout = () => {
         ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}`}
       >
         <div className="p-6">
-          <h2 className="text-xl font-bold text-primary mb-6">ADMIN PANEL</h2>
+          <h2 className="text-xl font-bold text-primary mb-6">
+            {isSuperAdmin ? "SUPER ADMIN PANEL" : "ADMIN PANEL"}
+          </h2>
 
-          <nav className="flex flex-col gap-4">
-            {navItem("/admin", "Dashboard")}
+          <nav className="flex flex-col gap-2">
+            {links.map(([to, label]) => navItem(to, label))}
           </nav>
 
           <button
